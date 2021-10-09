@@ -38,7 +38,11 @@ char* commandString()
 void applyCommands()
 {
 	Serial.println(concatenate("Applying command:", commandString()));
-	Serial.println("Command values:");
+	if (commandLength == 0) {
+		Serial.println("NO INPUT");
+		reset();
+		return;
+	}
 	char* result;
 	switch (currentMode)
 	{
@@ -110,6 +114,10 @@ void processInput(int input)
 			return;
 		}
 		setCommandLength(input);
+		if (commandLength == 0) {
+			applyCommands();
+			return;
+		}
 		incrementCurrentIndex();
 		return;
 	}
