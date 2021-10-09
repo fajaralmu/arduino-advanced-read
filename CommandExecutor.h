@@ -1,7 +1,7 @@
-// Process.h
+// CommandExecutor.h
 
-#ifndef _PROCESS_h
-#define _PROCESS_h
+#ifndef _COMMANDEXECUTOR_h
+#define _COMMANDEXECUTOR_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
 	#include "arduino.h"
@@ -9,15 +9,14 @@
 	#include "WProgram.h"
 #endif
 
+
 #endif
 #include "InputParses.h"
-#include "CommandExecutor.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-	void preProccess();
-	void processInput(int input);
+	char* printNumbers(int inputs[], int size);
+	char* printCharacters(int inputs[], int size);
 
 #ifdef __cplusplus
 }
