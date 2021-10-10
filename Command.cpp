@@ -102,11 +102,11 @@ char* CommandClass::execute()
 		return "No Args";
 	}
 
-	char* ch = printNumbers(commandArgument, commandLength);
+	char* ch = printNumbers(this->commandArgument, this->commandLength);
 	Serial.println();
-	for (int i = 0; i < commandLength; i++)
+	for (int i = 0; i < this->commandLength; i++)
 	{
-		Serial.print(commandArgument[i], DEC);
+		Serial.print(this->commandArgument[i], DEC);
 		Serial.print(" ");
 	}
 	Serial.println();

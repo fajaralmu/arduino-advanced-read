@@ -13,6 +13,7 @@
 #include "InputParses.h"
 #include "CommandExecutor.h"
 #include "Command.h"
+#include "Commandv2.h"
 
 #ifdef __cplusplus
 extern "C" {

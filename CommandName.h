@@ -11,10 +11,10 @@
 
 enum CommandName
 {
-	NONE			= 0,
-	ALARM			= 1,
-	PRINT_CHAR		= 2,
-	PRINT_NUMBER	= 3,
+	_NONE			= 0,
+	_ALARM			= 1,
+	_PRINT_CHAR		= 2,
+	_PRINT_NUMBER	= 3,
 };
 
 #endif

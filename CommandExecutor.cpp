@@ -16,6 +16,22 @@ char* printCharacters(int inputs[], int size)
 	return string;
 }
 
+char* executeCommand(CmdMode mode, int arguments[], int size)
+{
+
+	switch (mode)
+	{
+	case NONE:
+		return "No result";
+	case PRINT_CHAR:
+		return "Print char";
+	case PRINT_NUMBER:
+		return "Print number";
+	default:
+		break;
+	}
+}
+
 int concat(int a, int b)
 {
 

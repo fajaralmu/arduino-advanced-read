@@ -12,11 +12,14 @@
 
 #endif
 #include "InputParses.h"
+#include "CmdMode.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
 	char* printNumbers(int inputs[], int size);
 	char* printCharacters(int inputs[], int size);
+
+	char* executeCommand(CmdMode mode, int arguments[], int size);
 
 #ifdef __cplusplus
 }

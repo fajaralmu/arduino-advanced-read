@@ -3,14 +3,12 @@
 #ifndef _COMMAND_h
 #define _COMMAND_h
 
-#define CMD_MAX_LENGTH	255
-
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "arduino.h"
 #else
 #include "WProgram.h"
 #endif
-
+#include "GlobalMy.h"
 #include <Arduino.h>
 #include "CommandName.h"
 #include "CommandExecutor.h"
@@ -23,7 +21,7 @@ protected:
 	
 	int commandLength;
 	int currentCommandIndex;
-	CommandName name = NONE;
+	CommandName name = _NONE;
 	bool available = false;
 	bool disposed = false;
 	int commandArgument[CMD_MAX_LENGTH] = { 0 };

@@ -20,6 +20,7 @@ char* concatenate(char* str1, char* str2)
 	char* result = (char*)malloc(c);
 	strcpy(result, str1);
 	strcat(result, str2);
+	free(result);
 	return result;
 }
 
