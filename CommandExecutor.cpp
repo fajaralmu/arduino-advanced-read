@@ -39,28 +39,24 @@ void updateBlink(int ledPin, long deltaAsSecond, long* lastUpdated, int* lastSta
 
 char* executeCommand(CmdMode mode, int arguments[], int size)
 {
-	if (mode == NONE)
-	{
+	if (mode == NONE) {
 		return "No Operation";
 	}
-	if (mode == LED_ON)
-	{
-		int ledPinOn = arguments[0];
-		digitalWrite(ledPinOn, HIGH);
+	if (mode == LED_ON) {
+		int ledPin = arguments[0];
+		digitalWrite(ledPin, HIGH);
 		return "OK: LED on";
 	}
-	if (mode == LED_OFF)
-	{
-		int ledPinOff = arguments[0];
-		digitalWrite(ledPinOff, LOW);
+	if (mode == LED_OFF) {
+		int ledPin = arguments[0];
+		digitalWrite(ledPin, LOW);
 		return "OK: LED off";
 	}
-	if (mode == LED_BLINK)
-	{
+	if (mode == LED_BLINK) {
 		return "OK: LED blink";
 	}
 
-	return "INVALID COMMAND";
+	return "Invalid Command";
 }
 
 bool updateCommand(
