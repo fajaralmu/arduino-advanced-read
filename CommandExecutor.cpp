@@ -16,9 +16,25 @@ char* printCharacters(int inputs[], int size)
 	return string;
 }
 
+void updateBlink(long delta, long* lastUpdated, int* lastStatus)
+{
+	long now = millis();
+	long _lastUpdated = *lastUpdated;
+	long _lastStatus = *lastStatus;
+	if (now - _lastUpdated < delta) {
+		return;
+	}
+	
+	int mode = _lastStatus == 0 ? HIGH : LOW;
+	digitalWrite(LED_PIN, mode);
+	
+	*lastUpdated = now;
+	*lastStatus = _lastStatus == 1 ? 0 : 1;
+}
+
 char* executeCommand(CmdMode mode, int arguments[], int size)
 {
-
+	//Serial.println("EXEC COMMAND");
 	switch (mode)
 	{
 	case NONE:
@@ -27,9 +43,45 @@ char* executeCommand(CmdMode mode, int arguments[], int size)
 		return "Print char";
 	case PRINT_NUMBER:
 		return "Print number";
+	case LED_ON:
+		digitalWrite(LED_PIN, HIGH);
+		return "OK: led ON";
+	case LED_OFF:
+		digitalWrite(LED_PIN, LOW);
+		return "OK: led OFF";
+	case LED_BLINK:
+		return "OK: led BLINK";
+	case STOP_COMMAND:
+		int cmdModeToStop = arguments[0];
+		stopByCommandMode(static_cast<CmdMode>(cmdModeToStop));
+		return "OK: Stop command";
 	default:
-		break;
+		return "INVALID COMMAND";
 	}
+}
+
+bool updateCommand(
+	CmdMode mode, 
+	long *lastUpdated, 
+	int *lastStatus, 
+	int arguments[], 
+	int size)
+{
+	bool continueCommand = true;
+	switch (mode)
+	{
+		case LED_BLINK:
+			updateBlink(arguments[0], lastUpdated, lastStatus);
+			break;
+		case LED_OFF:
+		case LED_ON:
+		case STOP_COMMAND:
+		default:
+			continueCommand = false;
+			break;
+	}
+
+	return continueCommand;
 }
 
 int concat(int a, int b)

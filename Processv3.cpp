@@ -2,54 +2,66 @@
 #include "CommandName.h"
 #include <Arduino.h>
 
-#define MODE_PRINT_NUMBER	1
-#define MODE_PRINT_CHAR		2
 #define INDEX_INPUT_MODE	0
 #define INDEX_INPUT_SIZE	1
 #define COMMAND_MAX_LENGTH	255
-#define COMMAND_MAX_COUNT   50
 
 using namespace std;
 
 int currentArgumentIndex = 0;
 int commandIndex = 0;
+int _defaultCommandAdded = 0;
 
-Commandv2* commands[COMMAND_MAX_COUNT] = { nullptr };
 Commandv2* currentCommand = nullptr;
 
+void updateCommnadCountInRepo()
+{
+	setCommandCount(commandIndex);
+}
+
+Commandv2* sampleBlinkCommand()
+{
+	Commandv2* cmd = new(Commandv2);
+	Cmd_ctor2(cmd, LED_BLINK);
+	cmd->commandArgument[0] = 1000;
+	cmd->commandLength = 1;
+	cmd->currentCommandIndex = 0;
+	cmd->available = 1;
+	return cmd;
+}
+
+void putCommandToRepo(Commandv2* command)
+{
+	putCommand(command, commandIndex);
+	commandIndex = commandIndex + 1;
+	updateCommnadCountInRepo();
+}
 void reset()
 {
 	currentArgumentIndex = 0;
-	//currentCommand = nullptr;
 	const int size = commandIndex;
 	for (int i = 0; i < size; i++)
 	{
-		Commandv2* cmd = commands[i];
+		Commandv2* cmd = getCommand(i);
 		if (Cmd_isDisposed(cmd))
 		{
-			commands[i] = nullptr;
+			putCommand(nullptr, i);
 			delete cmd;
 		}
 	}
 }
-void preProccess()
-{
-	Serial.println("===================================================");
-	Serial.println("                   Welcome                         ");
-	Serial.println("===================================================");
-	Serial.println("Please input command mode:");
-	reset();
-}
+
+void preProccess() { reset(); }
 
 void addCommand(int mode)
 {
+	Serial.println("Add cmd");
 	Commandv2* command;
 	command = new(Commandv2);
 	Cmd_ctor(command, mode);
 	currentCommand = command;
-	commands[commandIndex] = currentCommand;
+	putCommandToRepo(command);
 
-	commandIndex++;
 	Serial.print("Selected mode:");
 	Serial.print(mode, DEC);
 	Serial.print(" ID:");
@@ -60,9 +72,13 @@ void addCommand(int mode)
 
 void setCommandLength(int length)
 {
-	Cmd_setSize(currentCommand, length);
+	int result = Cmd_setSize(currentCommand, length);
 
+	Serial.print("Set length:");
+	Serial.println(result, DEC);
 	Serial.print("Command length:");
+	Serial.println((currentCommand->commandLength), DEC);
+
 	Serial.println(Cmd_getSize(currentCommand), DEC);
 }
 
@@ -80,7 +96,7 @@ void appendCommand(int commandItem)
 
 	if (Cmd_isComplete(currentCommand))
 	{
-		int match = currentCommand == commands[commandIndex - 1] ? 1 : 0;
+		int match = currentCommand == getCommand(commandIndex - 1) ? 1 : 0;
 		Serial.println("Arguments Complete. Will execute");
 		Serial.print("Current command match:");
 		Serial.println(match, DEC);
@@ -92,10 +108,12 @@ void incrementCurrentIndex() { currentArgumentIndex++; }
 
 void processInput(int input)
 {
-	Serial.print("Received input:");
-	Serial.println(input, DEC);
-	Serial.print("currentArgumentIndex:");
-	Serial.println(currentArgumentIndex);
+	Serial.print("==> ");
+	Serial.print(input, DEC);
+	Serial.print(" POS :");
+	Serial.print(currentArgumentIndex, DEC);
+	Serial.print(" total cmd: ");
+	Serial.println(commandIndex);
 	if (currentArgumentIndex == INDEX_INPUT_MODE)
 	{
 		addCommand(input);
@@ -115,7 +133,7 @@ void processInput(int input)
 		incrementCurrentIndex();
 		return;
 	}
-	if (Cmd_isComplete(currentCommand) ==  false)
+	if (Cmd_isComplete(currentCommand) == false)
 	{
 		appendCommand(input);
 	}
@@ -125,31 +143,75 @@ void checkCurrentCommand()
 {
 	//Serial.println("Check current command");
 	if (currentCommand != nullptr && Cmd_isComplete(currentCommand)) {
-
+		Serial.println("---------------------------------");
 		Serial.println("Command is complete Please enter another command");
 		currentArgumentIndex = 0;
 	}
 }
 
+char* executeByCmdExecutor(Commandv2* me)
+{
+	return executeCommand(me->commandName, me->commandArgument, Cmd_getSize(me));
+}
+
 void applyCommands()
 {
 	const int size = commandIndex;
-	//Serial.println(" == APPLYING COMMANDS == ");
+
 	for (int i = 0; i < size; i++)
 	{
-		Commandv2* cmd = commands[i];
+		Commandv2* cmd = getCommand(i);
 		if (cmd != nullptr && Cmd_isExecutable(cmd))
 		{
-			Serial.print("START Execute Cmd - ");
+			Serial.print("<!>START Execute Cmd - ");
 			Serial.println(Cmd_getId(cmd));
 
-			char* result = Cmd_execute(cmd);
+			Cmd_execute(cmd);
+			char* result = executeByCmdExecutor(cmd);
 
-			Serial.print("Result: ");
+			Serial.print("[RESULT]: ");
 			Serial.println(result);
 		}
 	}
 	/*Serial.print("total Cmd");
 	Serial.println(size, DEC);*/
+
+}
+
+void updateByCmdExecutor(Commandv2* me)
+{
+	bool active = updateCommand(me->commandName, &me->lastUpdated, &me->lastStatus, me->commandArgument, Cmd_getSize(me));
+	if (!active)
+	{
+		Cmd_dispose(me);
+	}
+}
+
+void addDefaultCommands()
+{
+	putCommandToRepo(sampleBlinkCommand());
+}
+
+void updateCommands()
+{
+	if (0 == _defaultCommandAdded)
+	{
+		addDefaultCommands();
+		_defaultCommandAdded = 1;
+	}
+
+	const int size = commandIndex;
+	for (int i = 0; i < size; i++)
+	{
+		Commandv2* cmd = getCommand(i);
+		if (cmd == nullptr || 0 == Cmd_isStarted(cmd) || 1 == Cmd_isDisposed(cmd))
+			continue;
+		Cmd_update(cmd);
+		updateByCmdExecutor(cmd);
+
+	}
+	/*Serial.print("total Cmd");
+	Serial.println(size, DEC);*/
+	updateCommnadCountInRepo();
 
 }

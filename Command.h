@@ -10,7 +10,7 @@
 #endif
 #include "GlobalMy.h"
 #include <Arduino.h>
-#include "CommandName.h"
+#include "CmdMode.h"
 #include "CommandExecutor.h"
 
 
@@ -21,7 +21,7 @@ protected:
 	
 	int commandLength;
 	int currentCommandIndex;
-	CommandName name = _NONE;
+	CmdMode name = NONE;
 	bool available = false;
 	bool disposed = false;
 	int commandArgument[CMD_MAX_LENGTH] = { 0 };

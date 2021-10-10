@@ -8,7 +8,9 @@
 #else
 	#include "WProgram.h"
 #endif
-#define CMD_MAX_LENGTH	255
+#define CMD_MAX_LENGTH	250
+#define LED_PIN			13
+#define COMMAND_MAX_COUNT   50
 
 #endif
 

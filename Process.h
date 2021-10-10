@@ -13,7 +13,9 @@
 #include "InputParses.h"
 #include "CommandExecutor.h"
 #include "Command.h"
+#include "CommandsRepo.h"
 #include "Commandv2.h"
+#include "GlobalMy.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -22,6 +24,9 @@ extern "C" {
 	void processInput(int input);
 	void checkCurrentCommand();
 	void applyCommands();
+	void updateCommands();
+
+	
 
 #ifdef __cplusplus
 }

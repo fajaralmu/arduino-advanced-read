@@ -6,28 +6,43 @@
 
 // the setup function runs once when you press reset or power the board
 
-
+#include <stdio.h>
 #include "GlobalMy.h"
 #include "Process.h"
 #include <Arduino.h>
+#include <time.h> 
 
 #define BAUD_RATE	9600
 bool started = false;
+
+unsigned long _time;
+
 void setup() {
 	Serial.begin(BAUD_RATE);
+	pinMode(LED_PIN, OUTPUT);
+	_time = millis();
 }
-
-long time = millis();
+ 
 void refreshLog()
 {
-	long now = millis();
-	if (now - time > 3000) {
+	long _now = millis();
+	if (_now - _time > 3000) {
+		
+		//int m = now
 		int avail = Serial.available();
 		Serial.print(" (ok-");
-		Serial.print(avail);
+		Serial.print(_now);
 		Serial.print(") ");
-		time = now;
+		_time = _now;
 	}
+}
+
+void printWelcoming()
+{
+	Serial.println("===================================================");
+	Serial.println("                   Welcome                         ");
+	Serial.println("===================================================");
+	Serial.println("Please input command mode:");
 }
 
 // the loop function runs over and over again until power down or reset
@@ -37,6 +52,7 @@ void loop() {
 	if (available > 0) {
 		Serial.println(available);
 		if (started == false) {
+			printWelcoming();
 			preProccess();
 			
 			started = true;
@@ -48,6 +64,7 @@ void loop() {
 	}
 	
 	applyCommands();
+	updateCommands();
 	refreshLog();
 	delay(10);
 }

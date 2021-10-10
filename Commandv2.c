@@ -28,14 +28,20 @@ void Cmd_ctor(Commandv2* me, int name)
 	Cmd_init(me);
 }
 
-void Cmd_setSize(Commandv2* me, int size)
+int Cmd_setSize(Commandv2* me, int size)
 {
 	me->commandLength = size;
+	return me->commandLength;
 }
 void Cmd_init(Commandv2* me)
 {
 	me->currentCommandIndex = -1;
+	me->started = 0;
 	me->disposed = 0;
+	me->lastStatus = 0;
+	me->lastUpdated = millis();
+	me->commandLength = 0;
+	me->currentCommandIndex = 0;
 }
 
 void Cmd_reset(Commandv2* me)
@@ -66,8 +72,9 @@ void Cmd_appendCommandArgument(Commandv2* me, int argumentItem)
 }
 char* Cmd_execute(Commandv2* me)
 {
-	me->disposed = 1;
-	return executeCommand(Cmd_getCommandName(me), me->commandArgument, Cmd_getSize(me));
+	me->started = 1;
+	return "ok";
+	// MOVED to processv3.cpp return executeCommand(me->commandName, me->commandArgument, Cmd_getSize(me));
 }
 
 int Cmd_getSize(Commandv2* me)
@@ -92,7 +99,11 @@ boolean Cmd_isAvailable(Commandv2* me)
 }
 boolean Cmd_isExecutable(Commandv2* me)
 {
-	return 0 == Cmd_isDisposed(me) && Cmd_isAvailable(me) && Cmd_isComplete(me);
+	return 0 == Cmd_isDisposed(me) && 0 == Cmd_isStarted(me) && Cmd_isAvailable(me) && Cmd_isComplete(me);
+}
+boolean Cmd_isStarted(Commandv2* me)
+{
+	return me->started;
 }
 boolean Cmd_isDisposed(Commandv2* me)
 {
@@ -101,5 +112,16 @@ boolean Cmd_isDisposed(Commandv2* me)
 boolean Cmd_isComplete(Commandv2* me)
 {
 	return Cmd_getCurrentCommandIndex(me) == Cmd_getMaxArgumentIndex(me);
+}
+
+void Cmd_update(Commandv2* me)
+{
+//MOVED to processv3.cpp
+//	updateCommand(me->commandName, &me->lastUpdated, &me->lastStatus, me->commandArgument, Cmd_getSize(me));
+}
+ 
+void Cmd_dispose(Commandv2* me)
+{
+	me->disposed = 1;
 }
  
