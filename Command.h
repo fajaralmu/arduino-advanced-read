@@ -28,11 +28,12 @@ protected:
 	bool disposed = false;
 	int commandArgument[CMD_MAX_LENGTH] = { 0 };
 	int id = 0;
+
 public:
 	CommandClass(CommandName name);
 	CommandClass(int name);
 
-	void setSize(int size) { this->commandLength = size; }
+	void setSize(int size);
 	void init();
 
 	virtual void reset();
@@ -40,7 +41,7 @@ public:
 	virtual void appendCommandArgument(int argumentItem);
 	virtual char* execute();
 
-	int getSize() { return this->commandLength; }
+	int getSize();
 	int getCurrentCommandIndex() { return currentCommandIndex; }
 	CommandName getCommandName() { return name; }
 	int getId() { return id; }

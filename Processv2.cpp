@@ -51,7 +51,7 @@ void addCommand(int mode)
 	commandIndex++;
 	Serial.print("Selected mode:");
 	Serial.print(mode, DEC);
-	Serial.print(" id:");
+	Serial.print(" ID:");
 	Serial.println(currentCommand->getId(), DEC);
 
 	Serial.println("Please input command length:");
@@ -62,7 +62,7 @@ void setCommandLength(int length)
 	currentCommand->setSize(length);
 
 	Serial.print("Command length:");
-	Serial.println(length, DEC);
+	Serial.println(currentCommand->getSize(), DEC);
 }
 
 void appendCommand(int commandItem)
@@ -74,7 +74,7 @@ void appendCommand(int commandItem)
 	Serial.print("Command progress:");
 	Serial.print(currentIndex, DEC);
 	Serial.print(" of ");
-	Serial.println(commandLength, DEC);
+	Serial.println(commandLength - 1, DEC);
 
 	if (currentCommand->isComplete())
 	{
@@ -138,13 +138,10 @@ void applyCommands()
 		CommandClass* cmd = commands[i];
 		if (cmd != nullptr && cmd->isExecutable())
 		{
-			char* result = commands[i]->execute();
-
 			Serial.print("Execute Cmd ID:");
 			Serial.print(commands[i]->getId(), DEC);
-			Serial.print(", Result: ");
-			Serial.println(result);
 
+			char* result = commands[i]->execute();
 		}
 	}
 	/*Serial.print("total Cmd");
