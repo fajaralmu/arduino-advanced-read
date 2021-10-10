@@ -6,21 +6,32 @@
 #include "InputParses.h"
 #include <Arduino.h>
 
-static int running_id = 1;
+void CommandClass::setId()
+{
+	char char_arr[100];
+	sprintf(char_arr, "%d", (rand() % 100 + 100));
+	this->id = char_arr;
+}
+
+int CommandClass::maxArgumentIndex()
+{
+	return this->commandLength - 1;
+}
 
 CommandClass::CommandClass(CommandName name)
 {
-	running_id++;
 	this->name = name;
-	 
-	this->id = running_id + '0';
+	
+	setId();
 	init();
 }
+
+
 CommandClass::CommandClass(int name)
 {
-	running_id++;
 	this->name = static_cast<CommandName>(name);
-	this->id = running_id + '0';
+	
+	setId();
 	init();
 
 }
@@ -56,8 +67,6 @@ void CommandClass::incrementCommandIndex()
 		Serial.println("Argument length invalid");
 		return;
 	}
-	Serial.print("Increment cmd index:");
-	Serial.println(this->currentCommandIndex, DEC);
 	this->currentCommandIndex = this->currentCommandIndex + 1;
 }
 
@@ -67,10 +76,15 @@ void CommandClass::appendCommandArgument(int argumentItem)
 	incrementCommandIndex();
 	if (currentCommandIndex == lastIndex) return;
 	commandArgument[currentCommandIndex] = argumentItem;
-	Serial.print(" >> Append arg:");
+	
+	Serial.print("(");
+	Serial.print(getId());
+	Serial.print(")>> Append arg:");
 	Serial.print(argumentItem, DEC);
 	Serial.print(" Cmd index:");
-	Serial.println(currentCommandIndex, DEC);
+	Serial.print(currentCommandIndex, DEC);
+	Serial.print(" of ");
+	Serial.println(this->maxArgumentIndex(), DEC);
 
 	if (isComplete()) {
 		Serial.println(" .. complete .. ");
@@ -104,6 +118,16 @@ int CommandClass::getSize()
 	return this->commandLength;
 }
 
+int CommandClass::getCurrentCommandIndex()
+{
+	return this->currentCommandIndex;
+}
+
+char* CommandClass::getId()
+{
+	return this->id;
+}
+
 bool CommandClass::isAvailable()
 {
 	return this->available;
@@ -121,7 +145,7 @@ bool CommandClass::isDisposed()
 
 bool CommandClass::isComplete()
 {
-	return this->currentCommandIndex == this->commandLength - 1;
+	return this->currentCommandIndex == this->maxArgumentIndex();
 }
 
 

@@ -52,7 +52,7 @@ void addCommand(int mode)
 	Serial.print("Selected mode:");
 	Serial.print(mode, DEC);
 	Serial.print(" ID:");
-	Serial.println(currentCommand->getId(), DEC);
+	Serial.println(currentCommand->getId());
 
 	Serial.println("Please input command length:");
 }
@@ -69,13 +69,7 @@ void appendCommand(int commandItem)
 {
 	currentCommand->appendCommandArgument(commandItem);
 	int currentIndex = currentCommand->getCurrentCommandIndex();
-	int commandLength = currentCommand->getSize();
 	
-	Serial.print("Command progress:");
-	Serial.print(currentIndex, DEC);
-	Serial.print(" of ");
-	Serial.println(commandLength - 1, DEC);
-
 	if (currentCommand->isComplete())
 	{
 		int match = currentCommand == commands[commandIndex-1] ? 1 : 0;
@@ -120,11 +114,6 @@ void checkCurrentCommand()
 	if (currentCommand != nullptr && currentCommand->isExecutable()) {
 		
 		Serial.print("Command is complete Please enter another command");
-		Serial.print(". cmd arg:");
-		Serial.print(currentCommand->getCurrentCommandIndex(), DEC);
-		Serial.print(" of ");
-		Serial.println(currentCommand->getSize(), DEC);
-		
 		currentArgumentIndex = 0;
 	}
 }
@@ -138,10 +127,13 @@ void applyCommands()
 		CommandClass* cmd = commands[i];
 		if (cmd != nullptr && cmd->isExecutable())
 		{
-			Serial.print("Execute Cmd ID:");
-			Serial.print(commands[i]->getId(), DEC);
+			Serial.print("START Execute Cmd - ");
+			Serial.println(commands[i]->getId());
 
 			char* result = commands[i]->execute();
+
+			Serial.print("END Execute Cmd - ");
+			Serial.println(commands[i]->getId());
 		}
 	}
 	/*Serial.print("total Cmd");

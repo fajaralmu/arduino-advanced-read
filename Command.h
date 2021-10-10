@@ -27,8 +27,10 @@ protected:
 	bool available = false;
 	bool disposed = false;
 	int commandArgument[CMD_MAX_LENGTH] = { 0 };
-	int id = 0;
+	char* id;
 
+	int maxArgumentIndex();
+	void setId();
 public:
 	CommandClass(CommandName name);
 	CommandClass(int name);
@@ -42,9 +44,9 @@ public:
 	virtual char* execute();
 
 	int getSize();
-	int getCurrentCommandIndex() { return currentCommandIndex; }
+	int getCurrentCommandIndex();
 	CommandName getCommandName() { return name; }
-	int getId() { return id; }
+	char* getId();
 	bool isAvailable();
 	bool isExecutable();
 	bool isDisposed();
