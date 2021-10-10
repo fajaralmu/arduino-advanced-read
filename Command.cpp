@@ -18,7 +18,7 @@ int CommandClass::maxArgumentIndex()
 	return this->commandLength - 1;
 }
 
-CommandClass::CommandClass(CommandName name)
+CommandClass::CommandClass(CmdMode name)
 {
 	this->name = name;
 	
@@ -29,16 +29,12 @@ CommandClass::CommandClass(CommandName name)
 
 CommandClass::CommandClass(int name)
 {
-	this->name = static_cast<CommandName>(name);
-	
+	this->name = static_cast<CmdMode>(name);
+	Serial.println("SET COMMAND NAME: ");
+	Serial.println((int)this->name, DEC);
 	setId();
 	init();
-
 }
-//
-//int CommandClass::getId() {
-//	return this->id;
-//}
 
 void CommandClass::setSize(int size)
 {
@@ -51,7 +47,14 @@ void CommandClass::setSize(int size)
 void CommandClass::init()
 {
 	this->currentCommandIndex = -1;
-	Serial.println("INIT Commands");
+	this->lastStatus = 0;
+	this->lastUpdated = millis();
+	Serial.println("Initialize Commands");
+}
+
+void CommandClass::dispose()
+{
+	this->disposed = true;
 }
 
 void CommandClass::reset()
@@ -61,56 +64,46 @@ void CommandClass::reset()
 	memset(commandArgument, 0, CMD_MAX_LENGTH);
 }
 
-void CommandClass::incrementCommandIndex()
+bool CommandClass::incrementCommandIndex()
 {
 	if (this->currentCommandIndex >= CMD_MAX_LENGTH) {
-		Serial.println("Argument length invalid");
-		return;
+		return false;
 	}
 	this->currentCommandIndex = this->currentCommandIndex + 1;
+	return true;
 }
 
 void CommandClass::appendCommandArgument(int argumentItem)
 {
 	int lastIndex = currentCommandIndex;
-	incrementCommandIndex();
+	if (!incrementCommandIndex()) return;
 	if (currentCommandIndex == lastIndex) return;
 	commandArgument[currentCommandIndex] = argumentItem;
-	
-	Serial.print("(");
-	Serial.print(getId());
-	Serial.print(")>> Append arg:");
-	Serial.print(argumentItem, DEC);
-	Serial.print(" Cmd index:");
-	Serial.print(currentCommandIndex, DEC);
-	Serial.print(" of ");
-	Serial.println(this->maxArgumentIndex(), DEC);
 
 	if (isComplete()) {
-		Serial.println(" .. complete .. ");
-		Serial.println();
 		available = true;
 	}
 }
 
+bool CommandClass::update()
+{
+	//
+}
+
 char* CommandClass::execute()
 {
-	disposed = true;
-	Serial.println("======= print command argument ======");
-	if (commandLength == 0) {
-		Serial.println("No Args");
-		return "No Args";
-	}
+	started = true;
+	return "<OK>";
+}
 
-	char* ch = printNumbers(this->commandArgument, this->commandLength);
-	Serial.println();
-	for (int i = 0; i < this->commandLength; i++)
-	{
-		Serial.print(this->commandArgument[i], DEC);
-		Serial.print(" ");
-	}
-	Serial.println();
-	return ( ch );
+int* CommandClass::getArguments()
+{
+	return this->commandArgument;
+}
+
+int CommandClass::getMaxCommandIndex()
+{
+	return this->getSize() - 1;
 }
 
 int CommandClass::getSize()
@@ -135,9 +128,13 @@ bool CommandClass::isAvailable()
 
 bool CommandClass::isExecutable()
 {
-	return !this->isDisposed() && this->available && this->isComplete();
+	return !this->isStarted() && this->available && this->isComplete();
 }
 
+bool CommandClass::isStarted()
+{
+	return this->started;
+}
 bool CommandClass::isDisposed()
 {
 	return this->disposed;

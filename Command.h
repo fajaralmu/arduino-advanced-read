@@ -23,30 +23,40 @@ protected:
 	int currentCommandIndex;
 	CmdMode name = NONE;
 	bool available = false;
+	bool started = false;
 	bool disposed = false;
+
 	int commandArgument[CMD_MAX_LENGTH] = { 0 };
 	char* id;
 
 	int maxArgumentIndex();
 	void setId();
 public:
-	CommandClass(CommandName name);
+	int lastStatus;
+	long lastUpdated;
+
+	CommandClass(CmdMode name);
 	CommandClass(int name);
 
 	void setSize(int size);
 	void init();
+	void dispose();
 
 	virtual void reset();
-	virtual void incrementCommandIndex();
+	bool incrementCommandIndex();
 	virtual void appendCommandArgument(int argumentItem);
 	virtual char* execute();
+	virtual bool update();
 
+	int* getArguments();
+	int getMaxCommandIndex();
 	int getSize();
 	int getCurrentCommandIndex();
-	CommandName getCommandName() { return name; }
+	CmdMode getCommandName() { return name; }
 	char* getId();
 	bool isAvailable();
 	bool isExecutable();
+	bool isStarted();
 	bool isDisposed();
 	virtual bool isComplete();
 

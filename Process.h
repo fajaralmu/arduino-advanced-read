@@ -21,6 +21,7 @@
 extern "C" {
 #endif
 	void preProccess();
+	void appendCommand(int commandItem);
 	void processInput(int input);
 	void checkCurrentCommand();
 	void applyCommands();

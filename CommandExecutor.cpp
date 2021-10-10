@@ -15,13 +15,18 @@ char* printCharacters(int inputs[], int size)
 	}
 	return string;
 }
-
-void updateBlink(long delta, long* lastUpdated, int* lastStatus)
+/// <summary>
+/// 
+/// </summary>
+/// <param name="delta">second</param>
+/// <param name="lastUpdated"></param>
+/// <param name="lastStatus"></param>
+void updateBlink(long deltaAsSecond, long* lastUpdated, int* lastStatus)
 {
 	long now = millis();
 	long _lastUpdated = *lastUpdated;
 	long _lastStatus = *lastStatus;
-	if (now - _lastUpdated < delta) {
+	if (now - _lastUpdated < deltaAsSecond * 1000) {
 		return;
 	}
 	
@@ -34,7 +39,8 @@ void updateBlink(long delta, long* lastUpdated, int* lastStatus)
 
 char* executeCommand(CmdMode mode, int arguments[], int size)
 {
-	//Serial.println("EXEC COMMAND");
+	//Serial.println("Exec COMMAND NAME: ");
+	//Serial.println((int)mode, DEC);
 	switch (mode)
 	{
 	case NONE:
@@ -56,8 +62,9 @@ char* executeCommand(CmdMode mode, int arguments[], int size)
 		stopByCommandMode(static_cast<CmdMode>(cmdModeToStop));
 		return "OK: Stop command";
 	default:
-		return "INVALID COMMAND";
+		break;
 	}
+	return "INVALID COMMAND";
 }
 
 bool updateCommand(

@@ -30,7 +30,7 @@ extern "C" {
 	bool updateCommand(
 		CmdMode cmd, 
 		long *lastUpdated, 
-		int * lastStatus, 
+		int *lastStatus, 
 		int arguments[], 
 		int size);
 
