@@ -30,6 +30,7 @@ void preProccess() { reset(); }
 void addCommand(int mode)
 {
 	Serial.println("Add cmd:");
+	delete currentCommand;
 	CommandClass* command;
 	command = new CommandClass(mode);
 	currentCommand = command;
@@ -106,8 +107,14 @@ void checkCurrentCommand()
 {
 	//Serial.println("Check current command");
 	if (currentCommand != nullptr && currentCommand->isComplete()) {
+		int currIndx = currentCommand->getCurrentCommandIndex();
+		int maxIndx = currentCommand->getMaxCommandIndex();
 		Serial.println("---------------------------------");
 		Serial.println("Command is complete Please enter another command");
+		Serial.print(currIndx, DEC);
+		Serial.print(" of ");
+		Serial.println(maxIndx, DEC);
+
 		currentArgumentIndex = 0;
 	}
 }

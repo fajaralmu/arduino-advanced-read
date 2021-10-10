@@ -19,7 +19,7 @@ class CommandClass
 {
 protected:
 	
-	int commandLength;
+	int commandLength = -1;
 	int currentCommandIndex;
 	CmdMode name = NONE;
 	bool available = false;
@@ -37,6 +37,7 @@ public:
 
 	CommandClass(CmdMode name);
 	CommandClass(int name);
+	~CommandClass();
 
 	void setSize(int size);
 	void init();

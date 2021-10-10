@@ -4,7 +4,7 @@
 
 #include "Command.h"
 #include "InputParses.h"
-#include <Arduino.h>
+//#include <Arduino.h>
 
 void CommandClass::setId()
 {
@@ -30,10 +30,12 @@ CommandClass::CommandClass(CmdMode name)
 CommandClass::CommandClass(int name)
 {
 	this->name = static_cast<CmdMode>(name);
-	Serial.println("SET COMMAND NAME: ");
-	Serial.println((int)this->name, DEC);
 	setId();
 	init();
+}
+
+CommandClass::~CommandClass()
+{
 }
 
 void CommandClass::setSize(int size)

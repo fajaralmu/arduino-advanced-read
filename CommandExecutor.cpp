@@ -9,7 +9,7 @@ char* printCharacters(int inputs[], int size)
 	char* string = "";
 	for (int i = 0; i < size; i++)
 	{
-		char input = (char) inputs[i];
+		char input = (char)inputs[i];
 		char ch[] = { input };
 		string = concatenate(string, ch);
 	}
@@ -21,7 +21,7 @@ char* printCharacters(int inputs[], int size)
 /// <param name="delta">second</param>
 /// <param name="lastUpdated"></param>
 /// <param name="lastStatus"></param>
-void updateBlink(long deltaAsSecond, long* lastUpdated, int* lastStatus)
+void updateBlink(int ledPin, long deltaAsSecond, long* lastUpdated, int* lastStatus)
 {
 	long now = millis();
 	long _lastUpdated = *lastUpdated;
@@ -29,63 +29,63 @@ void updateBlink(long deltaAsSecond, long* lastUpdated, int* lastStatus)
 	if (now - _lastUpdated < deltaAsSecond * 1000) {
 		return;
 	}
-	
+
 	int mode = _lastStatus == 0 ? HIGH : LOW;
-	digitalWrite(LED_PIN, mode);
-	
+	digitalWrite(ledPin, mode);
+
 	*lastUpdated = now;
 	*lastStatus = _lastStatus == 1 ? 0 : 1;
 }
 
 char* executeCommand(CmdMode mode, int arguments[], int size)
 {
-	//Serial.println("Exec COMMAND NAME: ");
-	//Serial.println((int)mode, DEC);
-	switch (mode)
+	if (mode == NONE)
 	{
-	case NONE:
-		return "No result";
-	case PRINT_CHAR:
-		return "Print char";
-	case PRINT_NUMBER:
-		return "Print number";
-	case LED_ON:
-		digitalWrite(LED_PIN, HIGH);
-		return "OK: led ON";
-	case LED_OFF:
-		digitalWrite(LED_PIN, LOW);
-		return "OK: led OFF";
-	case LED_BLINK:
-		return "OK: led BLINK";
-	case STOP_COMMAND:
-		int cmdModeToStop = arguments[0];
-		stopByCommandMode(static_cast<CmdMode>(cmdModeToStop));
-		return "OK: Stop command";
-	default:
-		break;
+		return "No Operation";
 	}
+	if (mode == LED_ON)
+	{
+		int ledPinOn = arguments[0];
+		digitalWrite(ledPinOn, HIGH);
+		return "OK: LED on";
+	}
+	if (mode == LED_OFF)
+	{
+		int ledPinOff = arguments[0];
+		digitalWrite(ledPinOff, LOW);
+		return "OK: LED off";
+	}
+	if (mode == LED_BLINK)
+	{
+		return "OK: LED blink";
+	}
+
 	return "INVALID COMMAND";
 }
 
 bool updateCommand(
-	CmdMode mode, 
-	long *lastUpdated, 
-	int *lastStatus, 
-	int arguments[], 
+	CmdMode mode,
+	long* lastUpdated,
+	int* lastStatus,
+	int arguments[],
 	int size)
 {
 	bool continueCommand = true;
 	switch (mode)
 	{
-		case LED_BLINK:
-			updateBlink(arguments[0], lastUpdated, lastStatus);
-			break;
-		case LED_OFF:
-		case LED_ON:
-		case STOP_COMMAND:
-		default:
-			continueCommand = false;
-			break;
+	case LED_BLINK:
+		updateBlink(arguments[0], arguments[1], lastUpdated, lastStatus);
+		break;
+	case LED_OFF:
+	//	digitalWrite(arguments[0], LOW);
+		break;
+	case LED_ON:
+		//digitalWrite(arguments[0], HIGH);
+		break;
+	case STOP_COMMAND:
+	default:
+		continueCommand = false;
+		break;
 	}
 
 	return continueCommand;
