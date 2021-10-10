@@ -12,12 +12,15 @@
 #endif
 #include "InputParses.h"
 #include "CommandExecutor.h"
+#include "Command.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 	void preProccess();
 	void processInput(int input);
+	void checkCurrentCommand();
+	void applyCommands();
 
 #ifdef __cplusplus
 }

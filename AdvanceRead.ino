@@ -6,6 +6,7 @@
 
 // the setup function runs once when you press reset or power the board
 
+
 #include "Process.h"
 #include <Arduino.h>
 
@@ -27,5 +28,7 @@ void loop() {
 		int input = Serial.read();
 		processInput(input);
 	}
+	checkCurrentCommand();
+	applyCommands();
 	delay(1);
 }
