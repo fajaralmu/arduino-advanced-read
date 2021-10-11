@@ -21,7 +21,7 @@ protected:
 	
 	int commandLength = -1;
 	int currentCommandIndex;
-	CmdMode name = NONE;
+	CmdMode cmdName = NONE;
 	bool available = false;
 	bool started = false;
 	bool disposed = false;
@@ -30,6 +30,7 @@ protected:
 	char* id;
 	
 	int lastStatus;
+	long createdAt;
 	long lastUpdated;
 
 	void setId();
@@ -38,7 +39,6 @@ public:
 	CommandClass(CmdMode name);
 	CommandClass(int name);
 	~CommandClass();
-
 	
 	void init();
 	void dispose();
@@ -56,13 +56,14 @@ public:
 	int getSize() { return commandLength; }
 
 	int getCurrentCommandIndex() { return currentCommandIndex; }
-	CmdMode getCommandName() { return name; }
+	CmdMode getCommandName() { return cmdName; }
 	char* getId() { return id; }
 	bool isAvailable() { return available; }
 	bool isStarted() { return started; }
 	bool isDisposed() { return disposed; }
 	int getLastStatus() { return lastStatus; }
 	long getLastUpdated() { return lastUpdated; }
+	long getCreatedAt() { return createdAt; }
 
 	virtual bool isExecutable();
 	virtual bool isComplete();

@@ -25,6 +25,7 @@ extern "C" {
 
 	bool updateCommand(
 		CmdMode cmd, 
+		long createdAt,
 		long *lastUpdated, 
 		int *lastStatus, 
 		int arguments[], 

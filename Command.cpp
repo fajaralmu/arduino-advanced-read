@@ -14,16 +14,16 @@ void CommandClass::setId()
 
 CommandClass::CommandClass(CmdMode name)
 {
-	this->name = name;
+	this->cmdName = name;
 	
 	setId();
 	init();
 }
 
-
 CommandClass::CommandClass(int name)
 {
-	this->name = static_cast<CmdMode>(name);
+	this->cmdName = static_cast<CmdMode>(name);
+	
 	setId();
 	init();
 }
@@ -36,8 +36,8 @@ void CommandClass::init()
 {
 	this->currentCommandIndex = -1;
 	this->lastStatus = 0;
+	this->createdAt = millis();
 	this->lastUpdated = millis();
-	Serial.println("Initialize Commands");
 }
 
 void CommandClass::dispose()
@@ -47,14 +47,14 @@ void CommandClass::dispose()
 
 void CommandClass::reset()
 {
-	available = false;
-	commandLength = 0;
-	memset(commandArgument, 0, CMD_MAX_LENGTH);
+	this->available = false;
+	this->commandLength = 0;
+	memset(this->commandArgument, 0, CMD_MAX_LENGTH);
 }
 
 bool CommandClass::incrementCommandIndex()
 {
-	if (this->currentCommandIndex >= CMD_MAX_LENGTH) {
+	if (currentCommandIndex >= CMD_MAX_LENGTH) {
 		return false;
 	}
 	this->currentCommandIndex = this->currentCommandIndex + 1;
@@ -63,13 +63,13 @@ bool CommandClass::incrementCommandIndex()
 
 void CommandClass::appendCommandArgument(int argumentItem)
 {
-	int lastIndex = currentCommandIndex;
+	int lastIndex = this->currentCommandIndex;
 	if (!incrementCommandIndex()) return;
-	if (currentCommandIndex == lastIndex) return;
-	commandArgument[currentCommandIndex] = argumentItem;
+	if (this->currentCommandIndex == lastIndex) return;
+	this->commandArgument[this->currentCommandIndex] = argumentItem;
 
 	if (isComplete()) {
-		available = true;
+		this->available = true;
 	}
 }
 
@@ -77,10 +77,12 @@ bool CommandClass::update()
 {
 	bool availableToContinue = updateCommand(
 		getCommandName(),
-		&lastUpdated,
-		&lastStatus,
+		getCreatedAt(),
+		&this->lastUpdated,
+		&this->lastStatus,
 		getArguments(),
 		getSize());
+
 	if (!availableToContinue)
 	{
 		dispose();
@@ -89,23 +91,20 @@ bool CommandClass::update()
 
 char* CommandClass::execute()
 {
-	started = true;
-	return executeCommand(
-		getCommandName(),
-		getArguments(),
-		getSize());
+	this->started = true;
+	return executeCommand( getCommandName(), getArguments(), getSize());
 }
 
 
 bool CommandClass::isExecutable()
 {
-	return !this->isStarted() && this->available && this->isComplete();
+	return !isStarted() && this->available == true && isComplete();
 }
 
 
 bool CommandClass::isComplete()
 {
-	return this->currentCommandIndex == this->getMaxCommandIndex();
+	return currentCommandIndex == getMaxCommandIndex();
 }
 
 
