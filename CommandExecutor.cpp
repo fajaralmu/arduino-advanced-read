@@ -9,7 +9,7 @@ void updateBlink(
 	const int ledPin, 
 	const long deltaAsSecond, 
 	const long remainingDuration,
-	const long lastUpdated, 
+	long* lastUpdated, 
 	int* lastStatus)
 {
 	if (remainingDuration < 0) {
@@ -17,20 +17,21 @@ void updateBlink(
 	}
 	long now = millis();
 	long _lastStatus = *lastStatus;
-	if (now - lastUpdated < deltaAsSecond * 1000) {
+	long _lastUpdated = *lastUpdated;
+
+	if (now - _lastUpdated < deltaAsSecond * 1000) {
 		return;
 	}
 
 	int mode = _lastStatus == 0 ? HIGH : LOW;
 	digitalWrite(ledPin, mode);
 
+	*lastUpdated = now;
 	*lastStatus = _lastStatus == 1 ? 0 : 1;
 }
 
 char* executeCommand(CmdMode mode, int arguments[], int size)
 {
-	Serial.println("Exec Command:");
-	Serial.println(mode, DEC);
 	if (mode == NONE) {
 		return "No Operation";
 	}
@@ -70,7 +71,7 @@ bool updateCommand(
 	switch (mode)
 	{
 	case LED_BLINK:
-		updateBlink(arguments[0], arguments[1], remainingDuration, *lastUpdated, lastStatus);
+		updateBlink(arguments[0], arguments[1], remainingDuration, lastUpdated, lastStatus);
 		break;
 	case LED_OFF:
 	//	digitalWrite(arguments[0], LOW);
@@ -86,8 +87,9 @@ bool updateCommand(
 		continueCommand = false;
 		break;
 	}
-
-	*lastUpdated = now;
+	if (remainingDuration < 0) {
+		continueCommand = false;
+	}
 	return continueCommand;
 }
 
