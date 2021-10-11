@@ -7,7 +7,8 @@
 
 void updateBlink(
 	const int ledPin, 
-	const long deltaAsSecond, 
+	const long intervalMs, 
+	const long now,
 	const long remainingDuration,
 	long* lastUpdated, 
 	int* lastStatus)
@@ -15,11 +16,9 @@ void updateBlink(
 	if (remainingDuration < 0) {
 		digitalWrite(ledPin, LOW);
 	}
-	long now = millis();
 	long _lastStatus = *lastStatus;
-	long _lastUpdated = *lastUpdated;
 
-	if (now - _lastUpdated < deltaAsSecond * 1000) {
+	if ((now - *lastUpdated) < intervalMs) {
 		return;
 	}
 
@@ -71,7 +70,7 @@ bool updateCommand(
 	switch (mode)
 	{
 	case LED_BLINK:
-		updateBlink(arguments[0], arguments[1], remainingDuration, lastUpdated, lastStatus);
+		updateBlink(ledPin, intervalSec*1000, now, remainingDuration, lastUpdated, lastStatus);
 		break;
 	case LED_OFF:
 	//	digitalWrite(arguments[0], LOW);
