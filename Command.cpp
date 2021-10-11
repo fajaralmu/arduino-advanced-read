@@ -12,11 +12,6 @@ void CommandClass::setId()
 	this->id = char_arr;
 }
 
-int CommandClass::maxArgumentIndex()
-{
-	return this->commandLength - 1;
-}
-
 CommandClass::CommandClass(CmdMode name)
 {
 	this->name = name;
@@ -35,14 +30,6 @@ CommandClass::CommandClass(int name)
 
 CommandClass::~CommandClass()
 {
-}
-
-void CommandClass::setSize(int size)
-{
-	this->commandLength = size;
-	if (size == 0) {
-		this->available = true;
-	}
 }
 
 void CommandClass::init()
@@ -88,62 +75,37 @@ void CommandClass::appendCommandArgument(int argumentItem)
 
 bool CommandClass::update()
 {
-	//
+	bool availableToContinue = updateCommand(
+		getCommandName(),
+		&lastUpdated,
+		&lastStatus,
+		getArguments(),
+		getSize());
+	if (!availableToContinue)
+	{
+		dispose();
+	}
 }
 
 char* CommandClass::execute()
 {
 	started = true;
-	return "<OK>";
+	return executeCommand(
+		getCommandName(),
+		getArguments(),
+		getSize());
 }
 
-int* CommandClass::getArguments()
-{
-	return this->commandArgument;
-}
-
-int CommandClass::getMaxCommandIndex()
-{
-	return this->getSize() - 1;
-}
-
-int CommandClass::getSize()
-{
-	return this->commandLength;
-}
-
-int CommandClass::getCurrentCommandIndex()
-{
-	return this->currentCommandIndex;
-}
-
-char* CommandClass::getId()
-{
-	return this->id;
-}
-
-bool CommandClass::isAvailable()
-{
-	return this->available;
-}
 
 bool CommandClass::isExecutable()
 {
 	return !this->isStarted() && this->available && this->isComplete();
 }
 
-bool CommandClass::isStarted()
-{
-	return this->started;
-}
-bool CommandClass::isDisposed()
-{
-	return this->disposed;
-}
 
 bool CommandClass::isComplete()
 {
-	return this->currentCommandIndex == this->maxArgumentIndex();
+	return this->currentCommandIndex == this->getMaxCommandIndex();
 }
 
 

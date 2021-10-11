@@ -119,14 +119,6 @@ void checkCurrentCommand()
 	}
 }
 
-char* executeByCmdExecutor(CommandClass* me)
-{
-	return executeCommand(
-		me->getCommandName(),
-		me->getArguments(),
-		me->getSize());
-}
-
 void applyCommands()
 {
 	if (currentCommand == nullptr) return;
@@ -135,25 +127,10 @@ void applyCommands()
 		Serial.print("<!>START Execute Cmd - ");
 		Serial.println(currentCommand->getId());
 
-		currentCommand->execute();
-		char* result = executeByCmdExecutor(currentCommand);
+		char* result = currentCommand->execute();
 
 		Serial.print("[RESULT]: ");
 		Serial.println(result);
-	}
-}
-
-void updateByCmdExecutor(CommandClass* me)
-{
-	bool active = updateCommand(
-		me->getCommandName(),
-		&me->lastUpdated,
-		&me->lastStatus,
-		me->getArguments(),
-		me->getSize());
-	if (!active)
-	{
-		me->dispose();
 	}
 }
 
@@ -173,6 +150,5 @@ void updateCommands()
 	if (cmd == nullptr || 0 == cmd->isStarted() || 1 == cmd->isDisposed())
 		return;
 	cmd->update();
-	updateByCmdExecutor(cmd);
 
 }

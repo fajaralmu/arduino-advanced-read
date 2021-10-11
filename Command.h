@@ -28,18 +28,18 @@ protected:
 
 	int commandArgument[CMD_MAX_LENGTH] = { 0 };
 	char* id;
-
-	int maxArgumentIndex();
-	void setId();
-public:
+	
 	int lastStatus;
 	long lastUpdated;
+
+	void setId();
+public:
 
 	CommandClass(CmdMode name);
 	CommandClass(int name);
 	~CommandClass();
 
-	void setSize(int size);
+	
 	void init();
 	void dispose();
 
@@ -49,16 +49,22 @@ public:
 	virtual char* execute();
 	virtual bool update();
 
-	int* getArguments();
-	int getMaxCommandIndex();
-	int getSize();
-	int getCurrentCommandIndex();
+	int* getArguments() { return commandArgument; }
+	int getMaxCommandIndex() { return getSize() - 1; }
+	
+	void setSize(int size) { commandLength = size; if (size == 0) available = true; }
+	int getSize() { return commandLength; }
+
+	int getCurrentCommandIndex() { return currentCommandIndex; }
 	CmdMode getCommandName() { return name; }
-	char* getId();
-	bool isAvailable();
-	bool isExecutable();
-	bool isStarted();
-	bool isDisposed();
+	char* getId() { return id; }
+	bool isAvailable() { return available; }
+	bool isStarted() { return started; }
+	bool isDisposed() { return disposed; }
+	int getLastStatus() { return lastStatus; }
+	long getLastUpdated() { return lastUpdated; }
+
+	virtual bool isExecutable();
 	virtual bool isComplete();
 
 };
