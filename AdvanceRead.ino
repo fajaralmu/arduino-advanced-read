@@ -6,6 +6,7 @@
 
 // the setup function runs once when you press reset or power the board
 
+#include "CommandPayload.h"
 #include <stdio.h>
 #include "GlobalMy.h"
 #include "Process.h"
@@ -50,7 +51,6 @@ void loop() {
 	int available = Serial.available();
 
 	if (available > 0) {
-		Serial.println(available);
 		if (started == false) {
 			printWelcoming();
 			preProccess();

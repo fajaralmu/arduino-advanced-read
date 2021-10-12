@@ -10,7 +10,7 @@
 #endif
 #include "GlobalMy.h"
 #include <Arduino.h>
-#include "CmdMode.h"
+#include "CommandPayload.h"
 #include "CommandExecutor.h"
 
 
@@ -34,17 +34,18 @@ protected:
 	long lastUpdated;
 
 	void setId();
+	CommandPayload* buildCommandPayload();
+	bool incrementCommandIndex();
+	virtual void reset();
+	void dispose();
+	void init();
+
 public:
 
 	CommandClass(CmdMode name);
 	CommandClass(int name);
 	~CommandClass();
 	
-	void init();
-	void dispose();
-
-	virtual void reset();
-	bool incrementCommandIndex();
 	virtual void appendCommandArgument(int argumentItem);
 	virtual char* execute();
 	virtual bool update();

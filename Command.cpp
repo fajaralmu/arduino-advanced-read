@@ -73,26 +73,45 @@ void CommandClass::appendCommandArgument(int argumentItem)
 	}
 }
 
+CommandPayload* CommandClass::buildCommandPayload()
+{
+	// 0 -> Hardware PIN
+	// 1 -> durationSec
+	// 2 -> intervalSec
+
+	CommandPayload* payload = new CommandPayload(this->cmdName);
+	payload->createdAt = this->getCreatedAt();
+	payload->hardwarePin = this->commandArgument[0];
+	payload->durationMs = this->commandArgument[1] * 1000;
+	payload->intervalMs = this->commandArgument[2] * 1000;
+	payload->lastStatus = &this->lastStatus;
+	payload->lastUpdated = &this->lastUpdated;
+	return payload;
+}
+
 bool CommandClass::update()
 {
-	bool availableToContinue = updateCommand(
-		getCommandName(),
-		getCreatedAt(),
-		&this->lastUpdated,
-		&this->lastStatus,
-		getArguments(),
-		getSize());
+	CommandPayload*  payload = buildCommandPayload();
+	bool availableToContinue = updateCommand(payload);
 
 	if (!availableToContinue)
 	{
 		dispose();
 	}
+
+	delete payload;
+	return availableToContinue;
 }
 
 char* CommandClass::execute()
 {
 	this->started = true;
-	return executeCommand( getCommandName(), getArguments(), getSize());
+
+	CommandPayload*  payload = buildCommandPayload();
+	char* result = executeCommand( payload );
+
+	delete payload;
+	return result;
 }
 
 

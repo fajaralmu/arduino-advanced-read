@@ -8,30 +8,23 @@
 #else
 	#include "WProgram.h"
 #endif
-
-
-#endif
 #include <Arduino.h>
 #include "GlobalMy.h"
 #include "CmdMode.h"
+#include "CommandPayload.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-	
-	char* executeCommand(
-		CmdMode mode, 
-		int arguments[], 
-		int size);
 
-	bool updateCommand(
-		CmdMode cmd, 
-		long createdAt,
-		long *lastUpdated, 
-		int *lastStatus, 
-		int arguments[], 
-		int size);
+	char* executeCommand(CommandPayload*  payload);
+
+	bool updateCommand(CommandPayload*  payload);
 
 #ifdef __cplusplus
 }
 #endif
+
+#endif
+
 

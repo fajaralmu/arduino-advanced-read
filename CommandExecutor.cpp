@@ -29,19 +29,18 @@ void updateBlink(
 	*lastStatus = _lastStatus == 1 ? 0 : 1;
 }
 
-char* executeCommand(CmdMode mode, int arguments[], int size)
+char* executeCommand(CommandPayload* cmd)
 {
+	CmdMode mode = cmd->cmdName;
 	if (mode == NONE) {
 		return "No Operation";
 	}
 	if (mode == LED_ON) {
-		int ledPin = arguments[0];
-		digitalWrite(ledPin, HIGH);
+		digitalWrite(cmd->hardwarePin, HIGH);
 		return "OK: LED on";
 	}
 	if (mode == LED_OFF) {
-		int ledPin = arguments[0];
-		digitalWrite(ledPin, LOW);
+		digitalWrite(cmd->hardwarePin, LOW);
 		return "OK: LED off";
 	}
 	if (mode == LED_BLINK) {
@@ -51,33 +50,28 @@ char* executeCommand(CmdMode mode, int arguments[], int size)
 	return "Invalid Command";
 }
 
-bool updateCommand(
-	CmdMode mode,
-	long createdAt,
-	long* lastUpdated,
-	int* lastStatus,
-	int arguments[],
-	int size)
+bool updateCommand(CommandPayload* cmd)
 {
 	bool continueCommand = true;
 	long now = millis();
 
-	int ledPin		= arguments[0];
-	int intervalSec = arguments[1];
-	int duration	= arguments[2];
-
-	long remainingDuration = (duration*1000) - ( now - createdAt );
-	switch (mode)
+	long remainingDuration = cmd->durationMs == 0 ? 1 : cmd->durationMs - ( now - cmd->createdAt);
+	switch (cmd->cmdName)
 	{
 	case LED_BLINK:
-		updateBlink(ledPin, intervalSec*1000, now, remainingDuration, lastUpdated, lastStatus);
+		updateBlink(
+			cmd->hardwarePin, 
+			cmd->intervalMs, now, 
+			remainingDuration, 
+			cmd->lastUpdated,
+			cmd->lastStatus);
 		break;
 	case LED_OFF:
 	//	digitalWrite(arguments[0], LOW);
 		break;
 	case LED_ON:
 		if (remainingDuration < 0) {
-			digitalWrite(ledPin, LOW);
+			digitalWrite(cmd->hardwarePin, LOW);
 		}
 		//digitalWrite(arguments[0], HIGH);
 		break;
