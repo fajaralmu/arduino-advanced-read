@@ -14,10 +14,14 @@ CommandClass* activeCommand = nullptr;
 CommandClass* sampleBlinkCommand()
 {
 	CommandClass* cmd = new CommandClass(LED_BLINK);
-	cmd->setSize(1);
-	cmd->appendCommandArgument(1000);
+	cmd->setSize(3);
+	cmd->appendCommandArgument(LED_PIN); // hardware pin
+	cmd->appendCommandArgument(10); // duration sec
+	cmd->appendCommandArgument(1); // interval sec
 	return cmd;
 }
+
+void addDefaultCommands() { activeCommand = sampleBlinkCommand(); }
 
 void reset()
 {
@@ -30,19 +34,24 @@ void preProccess() { reset(); }
 void addCommand(int mode)
 {
 	Serial.print("[NEW COMMAND] >> ");
+	// delete current acvite command
 	delete activeCommand;
-	CommandClass* command;
-	command = new CommandClass(mode);
-	activeCommand = command;
+
+	// create new command
+	activeCommand = new CommandClass(mode);
+
 	Serial.print("Selected mode:");
 	Serial.print(mode, DEC);
 	Serial.print(" ID:");
-	Serial.println(command->getId());
+	Serial.println(activeCommand->getId());
 }
 
 void setCommandLength(int length)
 {
-	if (nullptr == activeCommand) return;
+	if (nullptr == activeCommand)
+	{
+		return;
+	}
 	activeCommand->setSize(length);
 
 	Serial.print("Command length:");
@@ -51,16 +60,18 @@ void setCommandLength(int length)
 
 void appendCommand(int commandItem)
 {
-	if (nullptr == activeCommand) return;
+	if (nullptr == activeCommand)
+	{
+		return;
+	}
 	activeCommand->appendCommandArgument(commandItem);
-	int currentIndex = activeCommand->getCurrentCommandIndex();
-	int cmdLength = activeCommand->getMaxCommandIndex();
-	Serial.print(">> arg:");
-	Serial.print(commandItem);
-	Serial.print(" index ");
-	Serial.print(currentIndex);
-	Serial.print(" of ");
-	Serial.println(cmdLength);
+
+	Serial.print	(">> arg:");
+	Serial.print	(commandItem);
+	Serial.print	(" index ");
+	Serial.print	(activeCommand->getCurrentCommandIndex());
+	Serial.print	(" of ");
+	Serial.println	(activeCommand->getMaxCommandIndex());
 
 	if (activeCommand->isComplete())
 	{
@@ -76,6 +87,7 @@ void processInput(int input)
 	Serial.print(input, DEC);
 	Serial.print(" POS :");
 	Serial.println(currentArgumentIndex, DEC);
+
 	if (currentArgumentIndex == INDEX_INPUT_MODE)
 	{
 		addCommand(input);
@@ -126,11 +138,6 @@ void applyCommands()
 		Serial.print("[RESULT]: ");
 		Serial.println(result);
 	}
-}
-
-void addDefaultCommands()
-{
-	//currentCommand = (sampleBlinkCommand());
 }
 
 void updateCommands()

@@ -34,10 +34,10 @@ CommandClass::~CommandClass()
 
 void CommandClass::init()
 {
-	this->currentCommandIndex = -1;
-	this->lastStatus = 0;
-	this->createdAt = millis();
-	this->lastUpdated = millis();
+	this->currentCommandIndex	= -1;
+	this->lastStatus			= 0;
+	this->createdAt				= millis();
+	this->lastUpdated			= millis();
 }
 
 void CommandClass::dispose()
@@ -64,11 +64,16 @@ bool CommandClass::incrementCommandIndex()
 void CommandClass::appendCommandArgument(int argumentItem)
 {
 	int lastIndex = this->currentCommandIndex;
-	if (!incrementCommandIndex()) return;
-	if (this->currentCommandIndex == lastIndex) return;
+
+	if (false == incrementCommandIndex() || 
+		this->currentCommandIndex == lastIndex)
+	{
+		return;
+	}
 	this->commandArgument[this->currentCommandIndex] = argumentItem;
 
-	if (isComplete()) {
+	if (isComplete())
+	{
 		this->available = true;
 	}
 }
@@ -80,19 +85,19 @@ CommandPayload* CommandClass::buildCommandPayload()
 	// 2 -> intervalSec
 
 	CommandPayload* payload = new CommandPayload(this->cmdName);
-	payload->createdAt = this->getCreatedAt();
-	payload->hardwarePin = this->commandArgument[0];
-	payload->durationMs = this->commandArgument[1] * 1000;
-	payload->intervalMs = this->commandArgument[2] * 1000;
-	payload->lastStatus = &this->lastStatus;
-	payload->lastUpdated = &this->lastUpdated;
+	payload->createdAt		= this->getCreatedAt();
+	payload->hardwarePin	= this->commandArgument[0];
+	payload->durationMs		= this->commandArgument[1] * 1000;
+	payload->intervalMs		= this->commandArgument[2] * 1000;
+	payload->lastStatus		= &this->lastStatus;
+	payload->lastUpdated	= &this->lastUpdated;
 	return payload;
 }
 
 bool CommandClass::update()
 {
 	CommandPayload*  payload = buildCommandPayload();
-	bool availableToContinue = updateCommand(payload);
+	bool availableToContinue = updateCommand( payload );
 
 	if (!availableToContinue)
 	{
@@ -117,7 +122,7 @@ char* CommandClass::execute()
 
 bool CommandClass::isExecutable()
 {
-	return !isStarted() && this->available == true && isComplete();
+	return isStarted() == false && this->available == true && isComplete();
 }
 
 
