@@ -9,7 +9,7 @@ using namespace std;
 int currentArgumentIndex = 0;
 int _defaultCommandAdded = 0;
 
-CommandClass* currentCommand = nullptr;
+CommandClass* activeCommand = nullptr;
 
 CommandClass* sampleBlinkCommand()
 {
@@ -22,7 +22,7 @@ CommandClass* sampleBlinkCommand()
 void reset()
 {
 	currentArgumentIndex = 0;
-	currentCommand = nullptr;
+	activeCommand = nullptr;
 }
 
 void preProccess() { reset(); }
@@ -30,10 +30,10 @@ void preProccess() { reset(); }
 void addCommand(int mode)
 {
 	Serial.print("[NEW COMMAND] >> ");
-	delete currentCommand;
+	delete activeCommand;
 	CommandClass* command;
 	command = new CommandClass(mode);
-	currentCommand = command;
+	activeCommand = command;
 	Serial.print("Selected mode:");
 	Serial.print(mode, DEC);
 	Serial.print(" ID:");
@@ -42,19 +42,19 @@ void addCommand(int mode)
 
 void setCommandLength(int length)
 {
-	if (nullptr == currentCommand) return;
-	currentCommand->setSize(length);
+	if (nullptr == activeCommand) return;
+	activeCommand->setSize(length);
 
 	Serial.print("Command length:");
-	Serial.println(currentCommand->getSize(), DEC);
+	Serial.println(activeCommand->getSize(), DEC);
 }
 
 void appendCommand(int commandItem)
 {
-	if (nullptr == currentCommand) return;
-	currentCommand->appendCommandArgument(commandItem);
-	int currentIndex = currentCommand->getCurrentCommandIndex();
-	int cmdLength = currentCommand->getMaxCommandIndex();
+	if (nullptr == activeCommand) return;
+	activeCommand->appendCommandArgument(commandItem);
+	int currentIndex = activeCommand->getCurrentCommandIndex();
+	int cmdLength = activeCommand->getMaxCommandIndex();
 	Serial.print(">> arg:");
 	Serial.print(commandItem);
 	Serial.print(" index ");
@@ -62,7 +62,7 @@ void appendCommand(int commandItem)
 	Serial.print(" of ");
 	Serial.println(cmdLength);
 
-	if (currentCommand->isComplete())
+	if (activeCommand->isComplete())
 	{
 		Serial.println("Arguments Complete. Will execute");
 	}
@@ -95,7 +95,7 @@ void processInput(int input)
 		incrementCurrentIndex();
 		return;
 	}
-	if (currentCommand->isComplete() == false)
+	if (activeCommand->isComplete() == false)
 	{
 		appendCommand(input);
 	}
@@ -104,9 +104,7 @@ void processInput(int input)
 void checkCurrentCommand()
 {
 	//Serial.println("Check current command");
-	if (currentCommand != nullptr && currentCommand->isComplete()) {
-		int currIndx = currentCommand->getCurrentCommandIndex();
-		int maxIndx = currentCommand->getMaxCommandIndex();
+	if (activeCommand != nullptr && activeCommand->isComplete()) {
 		Serial.println("---------------------------------");
 		Serial.println("Command is complete Please enter another command");
 		Serial.println();
@@ -117,13 +115,13 @@ void checkCurrentCommand()
 
 void applyCommands()
 {
-	if (currentCommand == nullptr) return;
-	if (currentCommand->isExecutable())
+	if (activeCommand == nullptr) return;
+	if (activeCommand->isExecutable())
 	{
 		Serial.print("<!>START Execute Cmd - ");
-		Serial.println(currentCommand->getId());
+		Serial.println(activeCommand->getId());
 
-		char* result = currentCommand->execute();
+		char* result = activeCommand->execute();
 
 		Serial.print("[RESULT]: ");
 		Serial.println(result);
@@ -142,7 +140,7 @@ void updateCommands()
 		addDefaultCommands();
 		_defaultCommandAdded = 1;
 	}
-	CommandClass* cmd = currentCommand;
+	CommandClass* cmd = activeCommand;
 	if (cmd == nullptr || 0 == cmd->isStarted() || 1 == cmd->isDisposed())
 		return;
 	cmd->update();

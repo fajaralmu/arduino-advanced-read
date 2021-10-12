@@ -40,10 +40,7 @@ void refreshLog()
 
 void printWelcoming()
 {
-	Serial.println("===================================================");
-	Serial.println("                   Welcome                         ");
-	Serial.println("===================================================");
-	Serial.println("Please input command mode:");
+	Serial.println("========================== Welcome =========================");
 }
 
 // the loop function runs over and over again until power down or reset
