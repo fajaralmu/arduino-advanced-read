@@ -66,5 +66,5 @@ void loop() {
 	applyCommands();
 	updateCommands();
 	refreshLog();
-	delay(10);
+	delay(1);
 }
