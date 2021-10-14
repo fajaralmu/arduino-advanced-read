@@ -83,6 +83,7 @@ CommandPayload* CommandClass::buildCommandPayload()
 	// 0 -> Hardware PIN
 	// 1 -> durationSec
 	// 2 -> intervalSec
+	// 3 -> angle
 
 	CommandPayload* payload = new CommandPayload(this->cmdName);
 	payload->createdAt		= this->getCreatedAt();
@@ -91,6 +92,7 @@ CommandPayload* CommandClass::buildCommandPayload()
 	payload->intervalMs		= this->commandArgument[2] * 1000;
 	payload->lastStatus		= &this->lastStatus;
 	payload->lastUpdated	= &this->lastUpdated;
+	payload->angle			= this->commandArgument[3];
 	return payload;
 }
 

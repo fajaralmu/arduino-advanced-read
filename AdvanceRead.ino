@@ -6,6 +6,7 @@
 
 // the setup function runs once when you press reset or power the board
 
+#include <Servo.h>
 #include "CommandPayload.h"
 #include <stdio.h>
 #include "GlobalMy.h"
@@ -42,7 +43,7 @@ void printWelcoming()
 {
 	Serial.println("========================== Welcome =========================");
 }
-
+int angle = 0;
 // the loop function runs over and over again until power down or reset
 void loop() {
 	int available = Serial.available();
@@ -63,5 +64,7 @@ void loop() {
 	applyCommands();
 	updateCommands();
 	refreshLog();
-	delay(1);
+	 
+
+	delay(15);
 }

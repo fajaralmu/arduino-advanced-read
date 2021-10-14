@@ -12,10 +12,13 @@
 #include "GlobalMy.h"
 #include "CmdMode.h"
 #include "CommandPayload.h"
-
+#include "Servo.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+	
+	Servo* getServo(int pin);
 
 	char* executeCommand(CommandPayload*  payload);
 

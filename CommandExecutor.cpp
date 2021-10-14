@@ -3,7 +3,26 @@
 // 
 
 #include "CommandExecutor.h"
-
+Servo* servoA = nullptr;
+Servo*  getServo(int pin)
+{
+	
+	switch (pin)
+	{
+	case SERVO_A_PIN:
+		
+		if (servoA == nullptr)
+		{
+			servoA = new Servo();
+			servoA->attach(pin);
+		}
+		return servoA;
+	default:
+		break;
+		
+	}
+	return nullptr;
+}
 
 void updateBlink(
 	const int ledPin, 
@@ -45,6 +64,16 @@ char* executeCommand(CommandPayload* cmd)
 	}
 	if (mode == LED_BLINK) {
 		return "OK: LED blink";
+	}
+	if (mode == MOVE_SERVO)
+	{
+		Servo*  s = getServo(cmd->hardwarePin);
+		if (nullptr == s)
+		{
+			return "[Error] Servo not found";
+		}
+		s->write(cmd->angle);
+		return "OK :Move servo";
 	}
 
 	return "Invalid Command";

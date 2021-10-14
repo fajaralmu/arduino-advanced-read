@@ -21,6 +21,7 @@ struct CommandPayload
 	int hardwarePin;
 	long durationMs;
 	long intervalMs;
+	int angle;
 
 	CommandPayload(CmdMode mod)
 	{
