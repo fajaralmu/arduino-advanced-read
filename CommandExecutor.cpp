@@ -4,6 +4,9 @@
 
 #include "CommandExecutor.h"
 Servo* servoA = nullptr;
+Servo* servoB = nullptr;
+//Servo* motors[5];
+
 Servo*  getServo(int pin)
 {
 	
@@ -17,6 +20,14 @@ Servo*  getServo(int pin)
 			servoA->attach(pin);
 		}
 		return servoA;
+	case SERVO_B_PIN:
+		
+		if (servoB == nullptr)
+		{
+			servoB = new Servo();
+			servoB->attach(pin);
+		}
+		return servoB;
 	default:
 		break;
 		

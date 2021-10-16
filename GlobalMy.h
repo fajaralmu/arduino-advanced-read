@@ -12,6 +12,7 @@
 #define LED_PIN			13
 #define COMMAND_MAX_COUNT   50
 #define SERVO_A_PIN		9
+#define SERVO_B_PIN		10
 
 
 #endif
