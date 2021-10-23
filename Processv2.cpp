@@ -33,17 +33,16 @@ void preProccess() { reset(); }
 
 void addCommand(int mode)
 {
-	Serial.print("[NEW COMMAND] >> ");
+	serialWrite("[NEW COMMAND] >> ");
 	// delete current acvite command
 	delete activeCommand;
 
 	// create new command
 	activeCommand = new CommandClass(mode);
 
-	Serial.print("Selected mode:");
-	Serial.print(mode, DEC);
-	Serial.print(" ID:");
-	Serial.println(activeCommand->getId());
+	serialWrite("Selected mode:");
+	serialWrite(mode);
+	serialWriteLn(" ID ", activeCommand->getId());
 }
 
 void setCommandLength(int length)
@@ -54,8 +53,7 @@ void setCommandLength(int length)
 	}
 	activeCommand->setSize(length);
 
-	Serial.print("Command length:");
-	Serial.println(activeCommand->getSize(), DEC);
+	serialWriteLn("Command length",activeCommand->getSize());
 }
 
 void appendCommand(int commandItem)
@@ -66,16 +64,16 @@ void appendCommand(int commandItem)
 	}
 	activeCommand->appendCommandArgument(commandItem);
 
-	Serial.print	(">> arg:");
-	Serial.print	(commandItem);
-	Serial.print	(" index ");
-	Serial.print	(activeCommand->getCurrentCommandIndex());
-	Serial.print	(" of ");
-	Serial.println	(activeCommand->getMaxCommandIndex());
+	serialWrite	(">> arg:");
+	serialWrite	(commandItem);
+	serialWrite	(" index ");
+	serialWrite	(activeCommand->getCurrentCommandIndex());
+	serialWrite	(" of ");
+	serialWriteLn	(activeCommand->getMaxCommandIndex());
 
 	if (activeCommand->isComplete())
 	{
-		Serial.println("Arguments Complete. Will execute");
+		serialWriteLn("Arguments Complete. Will execute");
 	}
 }
 
@@ -83,10 +81,9 @@ void incrementCurrentIndex() { currentArgumentIndex++; }
 
 void processInput(int input)
 {
-	Serial.print("==> ");
-	Serial.print(input, DEC);
-	Serial.print(" POS :");
-	Serial.println(currentArgumentIndex, DEC);
+	serialWrite("==> ");
+	serialWrite(input);
+	serialWriteLn(" POS ", currentArgumentIndex );
 
 	if (currentArgumentIndex == INDEX_INPUT_MODE)
 	{
@@ -99,7 +96,7 @@ void processInput(int input)
 	{
 		if (input > CMD_MAX_LENGTH)
 		{
-			Serial.println("Invalid length");
+			serialWriteLn("Invalid length");
 			reset();
 			return;
 		}
@@ -115,11 +112,11 @@ void processInput(int input)
 
 void checkCurrentCommand()
 {
-	//Serial.println("Check current command");
+	//serialWriteLn("Check current command");
 	if (activeCommand != nullptr && activeCommand->isComplete()) {
-		Serial.println("---------------------------------");
-		Serial.println("Command is complete Please enter another command");
-		Serial.println();
+		serialWriteLn("---------------------------------");
+		serialWriteLn("Command is complete Please enter another command");
+		serialWriteLn();
 
 		currentArgumentIndex = 0;
 	}
@@ -130,13 +127,12 @@ void applyCommands()
 	if (activeCommand == nullptr) return;
 	if (activeCommand->isExecutable())
 	{
-		Serial.print("<!>START Execute Cmd - ");
-		Serial.println(activeCommand->getId());
+		serialWriteLn("<!>START Execute Cmd - ", activeCommand->getId());
 
 		char* result = activeCommand->execute();
 
-		Serial.print("[RESULT]: ");
-		Serial.println(result);
+		serialWriteLn("[RESULT]", result);
+		serialWriteResponse( activeCommand->getCommandName(), result );
 	}
 }
 

@@ -6,6 +6,7 @@
 
 // the setup function runs once when you press reset or power the board
 
+
 #include <Servo.h>
 #include "CommandPayload.h"
 #include <stdio.h>
@@ -63,7 +64,7 @@ void loop() {
 	
 	applyCommands();
 	updateCommands();
-	refreshLog();
+	// refreshLog();
 	 
 
 	delay(15);

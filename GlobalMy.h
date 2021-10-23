@@ -13,6 +13,15 @@
 #define COMMAND_MAX_COUNT   50
 #define SERVO_A_PIN		9
 #define SERVO_B_PIN		10
+#define SERVO_C_PIN		11
+
+// message transmission
+
+#define START_OF_HEADING	01
+#define START_OF_TEXT		02
+
+#define END_OF_TEXT			03
+#define END_OF_TRANSMISSION	04
 
 
 #endif

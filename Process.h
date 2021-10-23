@@ -10,6 +10,8 @@
 #endif
 
 #endif
+
+#include "SerialWriter.h"
 #include "Command.h"
 #include "GlobalMy.h"
 
