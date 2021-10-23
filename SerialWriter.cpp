@@ -4,29 +4,46 @@
 
 #include "SerialWriter.h"
 
+bool enablePrint = true;
+
 void serialWrite(char* value=nullptr)
 {
-	Serial.print(value);
+	if (enablePrint)
+	{
+		Serial.print(value);
+	}
 }
 
 void serialWriteLn(char* value = nullptr)
 {
 	if (value == nullptr)
 	{
-		Serial.println();
+		if (enablePrint)
+		{
+			Serial.println();
+		}
 		return;
 	}
-	Serial.println(value);
+	if (enablePrint)
+	{
+		Serial.println(value);
+	}
 }
 
 void serialWrite(int value)
 {
-	Serial.print(value);
+	if (enablePrint)
+	{
+		Serial.print(value);
+	}
 }
 
 void serialWriteLn(int value)
 {
-	Serial.println(value);
+	if (enablePrint)
+	{
+		Serial.println(value);
+	}
 }
 
 void serialWriteLn(char* label, int value)
@@ -45,10 +62,10 @@ void serialWriteLn(char* label, char* value)
 
 void serialWriteResponse( CmdMode mode, char* response )
 {
-	serialWriteLn(START_OF_HEADING);
-	serialWriteLn(mode);
-	serialWriteLn(START_OF_TEXT);
-	serialWriteLn(response);
-	serialWriteLn(END_OF_TEXT);
-	serialWriteLn(END_OF_TRANSMISSION);
+	Serial.println(START_OF_HEADING);
+	Serial.println(mode);
+	Serial.println(START_OF_TEXT);
+	Serial.println(response);
+	Serial.println(END_OF_TEXT);
+	Serial.println(END_OF_TRANSMISSION);
 }
