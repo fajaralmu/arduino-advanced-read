@@ -44,7 +44,6 @@ void printWelcoming()
 {
 	Serial.println("========================== Welcome =========================");
 }
-int angle = 0;
 // the loop function runs over and over again until power down or reset
 void loop() {
 	int available = Serial.available();

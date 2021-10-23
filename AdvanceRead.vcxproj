@@ -122,6 +122,7 @@
     <ClCompile Include="Command.cpp" />
     <ClCompile Include="CommandExecutor.cpp" />
     <ClCompile Include="Processv2.cpp" />
+    <ClCompile Include="SerialWriter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CmdMode.h" />
@@ -129,6 +130,7 @@
     <ClInclude Include="CommandExecutor.h" />
     <ClInclude Include="GlobalMy.h" />
     <ClInclude Include="Process.h" />
+    <ClInclude Include="SerialWriter.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

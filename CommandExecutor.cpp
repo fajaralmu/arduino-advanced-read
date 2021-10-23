@@ -8,6 +8,8 @@ Servo* servoB = nullptr;
 Servo* servoC = nullptr;
 //Servo* motors[5];
 
+
+
 Servo*  getServo(int pin)
 {
 	
@@ -68,35 +70,45 @@ void updateBlink(
 	*lastStatus = _lastStatus == 1 ? 0 : 1;
 }
 
-char* executeCommand(CommandPayload* cmd)
+int executeCommand(CommandPayload* cmd)
 {
 	CmdMode mode = cmd->cmdName;
 	if (mode == NONE) {
-		return "No Operation";
+		return RESPONSE_OK;
 	}
 	if (mode == LED_ON) {
 		digitalWrite(cmd->hardwarePin, HIGH);
-		return "OK: LED on";
+		return RESPONSE_OK;
 	}
 	if (mode == LED_OFF) {
 		digitalWrite(cmd->hardwarePin, LOW);
-		return "OK: LED off";
+		return RESPONSE_OK;
 	}
 	if (mode == LED_BLINK) {
-		return "OK: LED blink";
+		return RESPONSE_OK;
 	}
 	if (mode == MOVE_SERVO)
 	{
 		Servo*  s = getServo(cmd->hardwarePin);
 		if (nullptr == s)
 		{
-			return "[Error] Servo not found";
+			return RESPONSE_FAILED;
 		}
 		s->write(cmd->angle);
-		return "OK :Move servo";
+		return RESPONSE_OK;
+	}
+	if (mode == READ_SERVO)
+	{
+		Servo* s = getServo(cmd->hardwarePin);
+		if (nullptr == s)
+		{
+			return RESPONSE_FAILED;
+		}
+		int angle = s->read();
+		return angle;
 	}
 
-	return "Invalid Command";
+	return RESPONSE_INVALID_CMD;
 }
 
 bool updateCommand(CommandPayload* cmd)

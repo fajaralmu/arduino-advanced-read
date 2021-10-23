@@ -20,7 +20,7 @@ extern "C" {
 	
 	Servo* getServo(int pin);
 
-	char* executeCommand(CommandPayload*  payload);
+	int executeCommand(CommandPayload*  payload);
 
 	bool updateCommand(CommandPayload*  payload);
 

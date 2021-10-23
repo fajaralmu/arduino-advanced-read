@@ -129,7 +129,7 @@ void applyCommands()
 	{
 		serialWriteLn("<!>START Execute Cmd - ", activeCommand->getId());
 
-		char* result = activeCommand->execute();
+		int result = activeCommand->execute();
 
 		serialWriteLn("[RESULT]", result);
 		serialWriteResponse( activeCommand->getCommandName(), result );

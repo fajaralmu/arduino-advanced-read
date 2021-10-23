@@ -21,6 +21,7 @@ void serialWriteLn(char* label, int value);
 void serialWriteLn(char* label, char* value);
 
 void serialWriteResponse( CmdMode mode, char* response );
+void serialWriteResponse( CmdMode mode, int response );
 
 #endif
 

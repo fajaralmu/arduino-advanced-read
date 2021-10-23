@@ -47,7 +47,7 @@ public:
 	~CommandClass();
 	
 	virtual void appendCommandArgument(int argumentItem);
-	virtual char* execute();
+	virtual int execute();
 	virtual bool update();
 
 	int* getArguments() { return commandArgument; }

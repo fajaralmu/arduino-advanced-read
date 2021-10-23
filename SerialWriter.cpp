@@ -60,6 +60,15 @@ void serialWriteLn(char* label, char* value)
 	serialWriteLn(value);
 }
 
+void serialWriteResponse( CmdMode mode, int response )
+{
+	Serial.println(START_OF_HEADING);
+	Serial.println(mode);
+	Serial.println(START_OF_TEXT);
+	Serial.println(response, DEC);
+	Serial.println(END_OF_TEXT);
+	Serial.println(END_OF_TRANSMISSION);
+}
 void serialWriteResponse( CmdMode mode, char* response )
 {
 	Serial.println(START_OF_HEADING);

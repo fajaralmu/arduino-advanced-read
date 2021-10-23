@@ -110,12 +110,12 @@ bool CommandClass::update()
 	return availableToContinue;
 }
 
-char* CommandClass::execute()
+int CommandClass::execute()
 {
 	this->started = true;
 
 	CommandPayload*  payload = buildCommandPayload();
-	char* result = executeCommand( payload );
+	int result = executeCommand( payload );
 
 	delete payload;
 	return result;

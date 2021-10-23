@@ -17,11 +17,15 @@
 
 // message transmission
 
-#define START_OF_HEADING	01
-#define START_OF_TEXT		02
+#define START_OF_HEADING	"SOH"
+#define START_OF_TEXT		"STX"
 
-#define END_OF_TEXT			03
-#define END_OF_TRANSMISSION	04
+#define END_OF_TEXT			"ETX"
+#define END_OF_TRANSMISSION	"EOT"
+
+#define RESPONSE_OK 1
+#define RESPONSE_FAILED -1
+#define RESPONSE_INVALID_CMD -2
 
 
 #endif
