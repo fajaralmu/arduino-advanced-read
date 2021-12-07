@@ -6,6 +6,8 @@
 Servo* servoA = nullptr;
 Servo* servoB = nullptr;
 Servo* servoC = nullptr;
+
+DCMotor* motorA = nullptr;
 //Servo* motors[5];
 
 
@@ -45,6 +47,28 @@ Servo*  getServo(int pin)
 	}
 	return nullptr;
 }
+
+DCMotor* getMotor(int pin, int in1, int in2)
+{
+
+	switch (pin)
+	{
+	case MOTOR_A_PIN:
+
+		if (motorA == nullptr)
+		{
+			motorA = new DCMotor(in1, in2, pin);
+			motorA->begin();
+		}
+		return motorA;
+	
+	default:
+		break;
+
+	}
+	return nullptr;
+}
+
 
 void updateBlink(
 	const int ledPin, 
@@ -107,6 +131,28 @@ int executeCommand(CommandPayload* cmd)
 		int angle = s->read();
 		return angle;
 	}
+	if (mode == MOVE_MOTOR)
+	{
+		DCMotor* m = getMotor(cmd->hardwarePin, cmd->input1Pin, cmd->input2Pin);
+		if (nullptr == m)
+		{
+			return RESPONSE_FAILED;
+		}
+		m->turnOn(1);
+		m->write(cmd->speed);
+		return RESPONSE_OK;
+	}
+
+  if (mode == STOP_MOTOR)
+  {
+    DCMotor* m = getMotor(cmd->hardwarePin, cmd->input1Pin, cmd->input2Pin);
+    if (nullptr == m)
+    {
+      return RESPONSE_FAILED;
+    }
+    m->turnOff();
+    return RESPONSE_OK;
+  }
 
 	return RESPONSE_INVALID_CMD;
 }
@@ -146,4 +192,3 @@ bool updateCommand(CommandPayload* cmd)
 	}
 	return continueCommand;
 }
-

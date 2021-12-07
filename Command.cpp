@@ -80,19 +80,26 @@ void CommandClass::appendCommandArgument(int argumentItem)
 
 CommandPayload* CommandClass::buildCommandPayload()
 {
-	// 0 -> Hardware PIN
-	// 1 -> durationSec
-	// 2 -> intervalSec
-	// 3 -> angle
 
-	CommandPayload* payload = new CommandPayload(this->cmdName);
+	CommandPayload* payload = new CommandPayload();
+  payload->cmdName      = this->cmdName;
 	payload->createdAt		= this->getCreatedAt();
 	payload->hardwarePin	= this->commandArgument[0];
-	payload->durationMs		= this->commandArgument[1] * 1000;
-	payload->intervalMs		= this->commandArgument[2] * 1000;
 	payload->lastStatus		= &this->lastStatus;
 	payload->lastUpdated	= &this->lastUpdated;
-	payload->angle			= this->commandArgument[3];
+	
+	if (this->cmdName == MOVE_MOTOR)
+	{
+		payload->input1Pin = this->commandArgument[1];
+		payload->input2Pin = this->commandArgument[2];
+		payload->speed     = this->commandArgument[3];
+	}
+	else
+	{
+		payload->durationMs = this->commandArgument[1] * 1000;
+		payload->intervalMs = this->commandArgument[2] * 1000;
+		payload->angle = this->commandArgument[3];
+	}
 	return payload;
 }
 
@@ -132,6 +139,3 @@ bool CommandClass::isComplete()
 {
 	return currentCommandIndex == getMaxCommandIndex();
 }
-
-
-

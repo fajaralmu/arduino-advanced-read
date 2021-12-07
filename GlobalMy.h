@@ -14,6 +14,8 @@
 #define SERVO_A_PIN		9
 #define SERVO_B_PIN		10
 #define SERVO_C_PIN		11
+#define MOTOR_A_PIN		9
+#define MOTOR_B_PIN		3
 
 // message transmission
 

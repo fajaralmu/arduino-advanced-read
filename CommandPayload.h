@@ -19,16 +19,16 @@ struct CommandPayload
 	int* lastStatus;
 
 	int hardwarePin;
+	// optional
+	int input1Pin;
+	int input2Pin;
+
 	long durationMs;
 	long intervalMs;
 	int angle;
+	int speed;
 
-	CommandPayload(CmdMode mod)
-	{
-		this->cmdName = mod;
-	}
-	~CommandPayload() {}
+
 };
 
 #endif
-

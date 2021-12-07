@@ -13,6 +13,7 @@
 #include "CmdMode.h"
 #include "CommandPayload.h"
 #include "Servo.h"
+#include "DCMotor.h"
 #ifdef __cplusplus
 extern "C" {
 #endif

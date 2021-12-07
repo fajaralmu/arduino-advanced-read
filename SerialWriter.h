@@ -8,7 +8,6 @@
 #else
 	#include "WProgram.h"
 #endif
-
 #include "CmdMode.h"
 #include "GlobalMy.h"
 
@@ -24,4 +23,3 @@ void serialWriteResponse( CmdMode mode, char* response );
 void serialWriteResponse( CmdMode mode, int response );
 
 #endif
-

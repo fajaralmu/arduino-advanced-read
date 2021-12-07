@@ -66,5 +66,5 @@ void loop() {
 	// refreshLog();
 	 
 
-	delay(15);
+	delay(100);
 }
