@@ -14,12 +14,11 @@
 #include "CommandPayload.h"
 #include "Servo.h"
 #include "DCMotor.h"
+#include "ServoExtended.h"
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-	
-	Servo* getServo(int pin);
 
 	int executeCommand(CommandPayload*  payload);
 

@@ -3,74 +3,59 @@
 //
 
 #include "CommandExecutor.h"
-Servo *servoA = nullptr;
-Servo *servoB = nullptr;
-Servo *servoC = nullptr;
 
-DCMotor *motorA = nullptr;
-DCMotor *motorB = nullptr;
+DCMotor* motors[5];
+ServoExtended* servos[5];
 //Servo* motors[5];
+int motorCount = 0;
+int servoCount = 0;
 
-Servo *getServo(int pin)
+ServoExtended* getServo(int pin)
 {
-
-	switch (pin)
+	int length = (sizeof(servos) / sizeof(*servos));
+	if (servoCount >= length - 1)
 	{
-	case SERVO_A_PIN:
-
-		if (servoA == nullptr)
-		{
-			servoA = new Servo();
-			servoA->attach(pin);
-		}
-		return servoA;
-	case SERVO_B_PIN:
-
-		if (servoB == nullptr)
-		{
-			servoB = new Servo();
-			servoB->attach(pin);
-		}
-		return servoB;
-	case SERVO_C_PIN:
-
-		if (servoC == nullptr)
-		{
-			servoC = new Servo();
-			servoC->attach(pin);
-		}
-		return servoC;
-	default:
-		break;
+		return nullptr;
 	}
-	return nullptr;
+	for (int i = 0; i < length; i++)
+	{
+		ServoExtended* motor = servos[i];
+		if (motor != nullptr && motor->pin == pin)
+		{
+			return servos[i];
+		}
+		else
+		{
+			servos[servoCount] = new ServoExtended(pin);
+			servoCount++;
+			return servos[servoCount];
+		}
+	}
+	
 }
 
 DCMotor *getMotor(int pin, int in1, int in2)
 {
-
-	switch (pin)
+	int motorLength = (sizeof(motors) / sizeof(*motors));
+	if (motorCount >= motorLength - 1)
 	{
-	case MOTOR_A_PIN:
-
-		if (motorA == nullptr)
-		{
-			motorA = new DCMotor(in1, in2, pin);
-			motorA->begin();
-		}
-		return motorA;
-	case MOTOR_B_PIN:
-
-		if (motorB == nullptr)
-		{
-			motorB = new DCMotor(in1, in2, pin);
-			motorB->begin();
-		}
-		return motorB;
-	default:
-		break;
+		return nullptr;
 	}
-	return nullptr;
+	for (int i = 0; i < motorLength; i++)
+	{
+		DCMotor* motor = motors[i];
+		if (motor != nullptr && motor->envPin == pin)
+		{
+			return motors[i];
+		}
+		else
+		{
+			motors[motorCount] = new DCMotor(in1, in2, pin);
+			motorCount++;
+			return motors[motorCount];
+		}
+	}
+	
 }
 
 void updateBlink(
@@ -122,7 +107,7 @@ int executeCommand(CommandPayload *cmd)
 	}
 	if (mode == MOVE_SERVO)
 	{
-		Servo *s = getServo(cmd->hardwarePin);
+		ServoExtended *s = getServo(cmd->hardwarePin);
 		if (nullptr == s)
 		{
 			return RESPONSE_FAILED;
@@ -132,7 +117,7 @@ int executeCommand(CommandPayload *cmd)
 	}
 	if (mode == READ_SERVO)
 	{
-		Servo *s = getServo(cmd->hardwarePin);
+		ServoExtended*s = getServo(cmd->hardwarePin);
 		if (nullptr == s)
 		{
 			return RESPONSE_FAILED;
