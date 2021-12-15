@@ -22,6 +22,7 @@ struct CommandPayload
 	// optional
 	int input1Pin;
 	int input2Pin;
+	int forward;
 
 	long durationMs;
 	long intervalMs;

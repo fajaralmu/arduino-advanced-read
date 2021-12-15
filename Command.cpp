@@ -82,7 +82,7 @@ CommandPayload* CommandClass::buildCommandPayload()
 {
 
 	CommandPayload* payload = new CommandPayload();
-  payload->cmdName      = this->cmdName;
+  	payload->cmdName      	= this->cmdName;
 	payload->createdAt		= this->getCreatedAt();
 	payload->hardwarePin	= this->commandArgument[0];
 	payload->lastStatus		= &this->lastStatus;
@@ -93,12 +93,13 @@ CommandPayload* CommandClass::buildCommandPayload()
 		payload->input1Pin = this->commandArgument[1];
 		payload->input2Pin = this->commandArgument[2];
 		payload->speed     = this->commandArgument[3];
+		payload->forward   = this->commandArgument[4];
 	}
 	else
 	{
 		payload->durationMs = this->commandArgument[1] * 1000;
 		payload->intervalMs = this->commandArgument[2] * 1000;
-		payload->angle = this->commandArgument[3];
+		payload->angle 		= this->commandArgument[3];
 	}
 	return payload;
 }

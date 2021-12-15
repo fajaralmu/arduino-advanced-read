@@ -147,7 +147,7 @@ int executeCommand(CommandPayload *cmd)
 		{
 			return RESPONSE_FAILED;
 		}
-		m->turnOn(1);
+		m->turnOn(cmd->forward);
 		m->write(cmd->speed);
 		return RESPONSE_OK;
 	}
